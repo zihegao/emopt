@@ -271,8 +271,12 @@ def save_results(fname, data, additional=None):
         Any addtional data to save
     """
     import h5py
+    import os
 
     fname_full = ''.join([fname, '.h5'])
+    dirpath = os.path.dirname(fname_full)
+    if dirpath and not os.path.exists(dirpath):
+        os.makedirs(dirpath, exist_ok=True)
     with h5py.File(fname_full, "w") as hf:
         group_sim = hf.create_group("simulation")
         group_opt = hf.create_group("optimization")
