@@ -707,7 +707,9 @@ class AdjointMethod(with_metaclass(ABCMeta, object)):
                 for ax in [ax1, ax2, ax3]:
                     ax.set_xticklabels(['%d' % i for i in indices])
 
-                ax3.set_yscale('log', nonposy='clip')
+                # Use the ``nonpositive`` keyword for compatibility with
+                # Matplotlib >= 3.3
+                ax3.set_yscale('log', nonpositive='clip')
 
                 plt.show()
 
