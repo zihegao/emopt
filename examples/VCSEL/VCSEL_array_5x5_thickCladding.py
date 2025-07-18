@@ -5,6 +5,104 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math import pi
 
+### class for plotting modes ###
+class WaveguidePlotter:
+    def __init__(self, modes):
+        self.modes = modes
+
+    def plot_eps(self):
+        # display epsilon profile
+        eps_array = self.modes.eps.get_values_in(self.modes.domain)
+        plt.figure()
+        plt.imshow(np.real(eps_array),origin='lower')
+
+    def plot_mode(self, n_plot = None, modes_plot = None):
+        # plot specified modes, either by number of modes or list of mode indices
+        if modes_plot is not None and n_plot is not None:
+            raise ValueError("Specify either n_plot or modes_plot, not both.")
+        if modes_plot is None and n_plot is None:
+            n_plot = modes.neigs
+        if modes_plot is None and n_plot is not None:   
+            modes_plot = range(n_plot)
+
+        fig, axs = plt.subplots(1, 2)
+
+        Ex0 = self.modes.get_field_interp(0, 'Ex', squeeze=True)
+        Ey0 = self.modes.get_field_interp(0, 'Ey', squeeze=True)
+        #vmin = np.min(np.append(np.abs(Ex0),np.abs(Ey0)))
+        #vmax = np.max(np.append(np.abs(Ex0),np.abs(Ey0)))
+
+        for i_mode in modes_plot:
+            Ex = self.modes.get_field_interp(i_mode, 'Ex', squeeze=True)
+            Ey = self.modes.get_field_interp(i_mode, 'Ey', squeeze=True)
+            Ez = self.modes.get_field_interp(i_mode, 'Ez', squeeze=True)
+            Hx = self.modes.get_field_interp(i_mode, 'Hx', squeeze=True)
+            Hy = self.modes.get_field_interp(i_mode, 'Hy', squeeze=True)
+            Hz = self.modes.get_field_interp(i_mode, 'Hz', squeeze=True)
+            print('Effective index = {:.4}'.format(modes.neff[i_mode].real))
+
+            # eps_arr = self.modes.eps.get_values_in(self.modes.domain)
+
+            f, axs = plt.subplots(3,2)
+            f.suptitle(f'Mode Index: {i_mode}\n n_eff = {modes.neff[i_mode].real:.5f}')
+            # First column: Ex, Ey, Ez
+            vmin = np.min(np.abs(Ex))
+            vmax = np.max(np.abs(Ex))
+            im1 = axs[0,0].imshow(np.abs(Ex),
+                                extent=[-simulation_width/2,simulation_width/2,
+                                        -simulation_height/2,simulation_height/2],
+                                vmin=vmin,
+                                vmax=vmax, cmap='hot', origin='lower')
+            axs[0,0].set_title('Ex Field Component')
+            f.colorbar(im1, ax=axs[0,0])
+            vmin = np.min(np.abs(Ey))
+            vmax = np.max(np.abs(Ey))
+            im2 = axs[1,0].imshow(np.abs(Ey),
+                                extent=[-simulation_width/2,simulation_width/2,
+                                        -simulation_height/2,simulation_height/2],
+                                vmin=vmin,
+                                vmax=vmax, cmap='hot', origin='lower')
+            axs[1,0].set_title('Ey Field Component')
+            f.colorbar(im2, ax=axs[1,0])
+            vmin = np.min(np.abs(Ez))
+            vmax = np.max(np.abs(Ez))
+            im3 = axs[2,0].imshow(np.abs(Ez),
+                                extent=[-simulation_width/2,simulation_width/2,
+                                        -simulation_height/2,simulation_height/2],
+                                vmin=vmin,
+                                vmax=vmax, cmap='hot', origin='lower')
+            axs[2,0].set_title('Ez Field Component')
+            f.colorbar(im3, ax=axs[2,0])
+            # Second column: Hx, Hy, Hz
+            vmin = np.min(np.abs(Hx))
+            vmax = np.max(np.abs(Hx))
+            im4 = axs[0,1].imshow(np.abs(Hx),
+                                extent=[-simulation_width/2,simulation_width/2,
+                                        -simulation_height/2,simulation_height/2],
+                                vmin=vmin,
+                                vmax=vmax, cmap='hot', origin='lower')
+            axs[0,1].set_title('Hx Field Component')
+            f.colorbar(im4, ax=axs[0,1])
+            vmin = np.min(np.abs(Hy))
+            vmax = np.max(np.abs(Hy))
+            im5 = axs[1,1].imshow(np.abs(Hy),
+                                extent=[-simulation_width/2,simulation_width/2,
+                                        -simulation_height/2,simulation_height/2],
+                                vmin=vmin,
+                                vmax=vmax, cmap='hot', origin='lower')
+            axs[1,1].set_title('Hy Field Component')
+            f.colorbar(im5, ax=axs[1,1])
+            vmin = np.min(np.abs(Hz))
+            vmax = np.max(np.abs(Hz))
+            im6 = axs[2,1].imshow(np.abs(Hz),
+                                extent=[-simulation_width/2,simulation_width/2,
+                                        -simulation_height/2,simulation_height/2],
+                                vmin=vmin,
+                                vmax=vmax, cmap='hot', origin='lower')
+            axs[2,1].set_title('Hz Field Component')
+            f.colorbar(im6, ax=axs[2,1])
+            plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+            plt.show()
 
 ####################################################################################
 # Set up the size of the problem
