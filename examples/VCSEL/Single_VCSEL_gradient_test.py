@@ -1,14 +1,10 @@
 import emopt
-from emopt.adjoint_method import AdjointMethod
 from emopt.misc import NOT_PARALLEL
 
 import numpy as np
 import matplotlib.pyplot as plt
 from math import pi
 
-#Class for handling optimization of VCSEL shape
-class CavityAM(AdjointMethod):
-    
 ####################################################################################
 # Set up the size of the problem
 ####################################################################################
@@ -137,4 +133,3 @@ if(NOT_PARALLEL):
     f.colorbar(im1)
     f.colorbar(im2)
     plt.show()
-    

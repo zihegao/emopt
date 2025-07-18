@@ -519,9 +519,17 @@ class Polygon(MaterialPrimitive):
         return np.copy(self._xs)
 
     @property
+    def wireframe_xs(self):
+        return np.append(self.xs, self._xs[0])
+    
+    @property
     def ys(self):
         return np.copy(self._ys)
 
+    @property
+    def wireframe_ys(self):
+        return np.append(self.ys, self._ys[0])
+    
     @property
     def Np(self):
         return self._Np
@@ -590,6 +598,19 @@ class Polygon(MaterialPrimitive):
         libGrid.Polygon_set_material(self._object, mat.real, mat.imag)
         self._value = mat
 
+    def translate(self, dx, dy):
+        """Translate all points in the polygon by (dx, dy)."""
+        self._xs = self._xs + dx
+        self._ys = self._ys + dy
+        libGrid.Polygon_set_points(self._object, self._xs, self._ys, len(self._xs))
+        return self
+
+    def copy(self):
+        """Copys all points in the polygon to a new polygon."""
+        new_xs = self.xs
+        new_ys = self.ys
+        return Polygon(new_xs, new_ys)
+    
     @staticmethod
     def populate_lines(xs, ys, ds):
         """Populate one or more line segments with points.

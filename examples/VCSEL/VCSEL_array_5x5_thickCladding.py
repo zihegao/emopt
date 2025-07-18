@@ -135,14 +135,18 @@ modes.build()
 modes.solve()
 
 DoF = N*M*6 # 6 field vectors on each grid
-ram_GB = (N*M*6)**2 * 4 /1024**3 # int32 takes 4 bytes
+dense_matrix_ram_GB = (N*M*6)**2 * 4 /1024**3 # int32 takes 4 bytes
+nnz = DoF * 13 #high-end approximation of the number of non-zero numbers 
+aprox_sparse_matrix_ram_GB = (8 * nnz + 4 * (DoF + 1)) / 1024**3
 print(f'{N=},  {M=},  {DoF=}')
-print(f'{ram_GB=:.2f}')
+print(f'{dense_matrix_ram_GB=:.2f}')
+print(f'{aprox_sparse_matrix_ram_GB=:.2f}')
+
 #%% Plotting
 plt.close('all')
 plotting = True
 
-mode_plot = np.arange(39,45)
+mode_plot = np.arange(0,50)
 # mode_plot = [0,1]
 if plotting:
     
@@ -155,6 +159,7 @@ if plotting:
     Ey0 = modes.get_field_interp(0, 'Ey', squeeze=True)
     #vmin = np.min(np.append(np.abs(Ex0),np.abs(Ey0)))
     #vmax = np.max(np.append(np.abs(Ex0),np.abs(Ey0)))
+    
     for mode_index in mode_plot:
         Ex = modes.get_field_interp(mode_index, 'Ex', squeeze=True)
         Ey = modes.get_field_interp(mode_index, 'Ey', squeeze=True)
